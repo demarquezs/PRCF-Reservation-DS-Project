@@ -60,8 +60,9 @@ git clone https://github.com/demarquezs/PRCF-Reservation-DS-Project.git
 cd prcf-reservation
 
 # Install required dependencies
-pip install -r requirements.txt
+pip install -r requirements_data.txt
 
 # Run Jupyter notebooks
 jupyter notebook
+
 

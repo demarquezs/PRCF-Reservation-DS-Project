@@ -59,22 +59,29 @@
         - name: Checkout repository
           uses: actions/checkout@v4
 
+        - name: Prepare lowercase image name
+          id: prep
+          run: |
+            REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+            echo "repo_name=$REPO_NAME" >> $GITHUB_ENV
+
         - name: Build Docker image
-          run: docker build -t ${{ secrets.REGISTRY }}/${{ github.repository }}:latest .
+          run: docker build -t ${{ secrets.REGISTRY }}/${{ env.repo_name }}:latest .
 
         - name: Log in to the Docker registry
           run: |
             echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY }} -u "${{ secrets.REGISTRY_USER }}" --password-stdin
 
         - name: Push Docker image
-          run: docker push ${{ secrets.REGISTRY }}/${{ github.repository }}:latest
+          run: docker push ${{ secrets.REGISTRY }}/${{ env.repo_name }}:latest
+
 
     run_prefect_pipeline:
       needs: build_and_push
       runs-on: ubuntu-latest
       steps:
         - name: Checkout repository
-          uses: actions/checkout@v4
+          uses: actions/checkout@v4 
 
         - name: Set up Python
           uses: actions/setup-python@v4

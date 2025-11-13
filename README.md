@@ -39,7 +39,18 @@ Two supervised learning models for time series forecasting using TimeSeriesSplit
 - Implements time series splits for evaluation purposes only
 - Uses weighted performance scoring for final model selection
 
-## 🚀 Getting Started
+## ⚙️ MLOps Stack
+
+| Category | Tool / Concept | Purpose |
+|-----------|----------------|----------|
+| **Version Control** | Git + GitHub | Code versioning and collaboration |
+| **Data & Model Versioning** | [DVC](https://dvc.org/) | Track large files, datasets, and model artifacts |
+| **Environment Management** | `requirements_mlops.txt` / Conda | Reproducible Python environment |
+| **Experiment Tracking** | DVC Metrics / (optional) MLflow | Track model performance across runs |
+| **Continuous Integration** | GitHub Actions | Automate testing, linting, and training pipeline |
+| **Reproducibility** | YAML config files | Ensure consistent parameters and pipelines |
+
+## 🚀 Getting Started (DS Project)
 
 ```bash
 # Clone the repository
@@ -53,3 +64,4 @@ pip install -r requirements.txt
 
 # Run Jupyter notebooks
 jupyter notebook
+

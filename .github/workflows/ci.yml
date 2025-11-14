@@ -23,6 +23,11 @@
             python-version: "3.12"
 
 
+        # Add a PYTHONPATH    
+        - name: Add src to PYTHONPATH
+          run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
+
         # Step 3 - Install dependencies
         - name: Install dependencies
           run: |

@@ -28,10 +28,9 @@ def test_obtain_models_task():
     assert "LinearRegression" in result
 
 
-
 #test training_model_task
-@patch("src.pipeline.mlflow.start_run")
 @patch("src.pipeline.mlflow.sklearn.log_model")
+@patch("src.pipeline.mlflow.start_run")
 
 def test_training_model_task(mock_log_model, mock_start_run):
     #Eesure the training task calls MLflow and returns expected outputs

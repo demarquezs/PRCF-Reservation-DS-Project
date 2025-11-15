@@ -1,13 +1,3 @@
-
-from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
-from src.config import training_params, model_params
-from sklearn.metrics import r2_score
-import numpy as np
-import time
-import joblib
-import os
-
-#create a function that standardizes the scale, divide data ofr train and test, trains models, splits the data for time series giving weights to the splits (giving more weight to the most recent splits), evaluates the models using these splits and selects (and save) the best model:
 from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
 from sklearn.metrics import r2_score
 import numpy as np

@@ -8,13 +8,10 @@ from sklearn.preprocessing import StandardScaler
 
 def load_data(custom_params=None):
 
-    if custom_params is not None:
-        params=custom_params
-    else:
-        params= client_params
+    params = custom_params or client_params
 
     #extract the data using Socrata’s client library:
-    client = Socrata(client_params['domain'], None)
+    client = Socrata(params['domain'], None)
     results = client.get(params['dataset_identifier'], limit=params['limit'])
     df = pd.DataFrame.from_records(results)
 

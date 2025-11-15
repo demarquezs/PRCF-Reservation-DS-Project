@@ -4,6 +4,7 @@ from src.data import load_data, filter_and_process_data, transform_and_split_dat
 from src.model import get_models_to_use
 from src.train import tscv_with_weighted_best_model
 import mlflow
+import mlflow.sklearn 
 
 
 @task
@@ -39,6 +40,8 @@ def training_model_task(X_train_scaled, X_val, y_train, y_val, models):
         #log weighted R² for every model
         for mname, score in weighted_scores.items():
             mlflow.log_metric(f"{mname}_weighted_r2", float(score))
+
+        print(">>> Calling MLflow log_model for:", best_name)
 
         #og best model to MLflowl
         mlflow.sklearn.log_model(best_model, artifact_path=f"models/{best_name}")

@@ -8,13 +8,19 @@ from src.train import tscv_with_weighted_best_model
 
 @pytest.fixture
 def test_data():
-    #generate small fake data for quick testing
-    X = pd.DataFrame({
+    # Tiny fake dataset
+    df = pd.DataFrame({
         "feature1": np.random.rand(20),
-        "feature2": np.random.rand(20)
+        "feature2": np.random.rand(20),
+        "target": np.random.rand(20)
     })
-    y = pd.Series(np.random.rand(20))
-    return X, y
+    train_size = 14
+    X_train = df[["feature1", "feature2"]].iloc[:train_size]
+    X_val = df[["feature1", "feature2"]].iloc[train_size:]
+    y_train = df["target"].iloc[:train_size]
+    y_val = df["target"].iloc[train_size:]
+    
+    return X_train, X_val, y_train, y_val
 
 
 @pytest.fixture

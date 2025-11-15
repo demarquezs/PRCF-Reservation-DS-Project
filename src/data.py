@@ -6,11 +6,16 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 
 
-def load_data():
+def load_data(custom_params=None):
+
+    if custom_params is not None:
+        params=custom_params
+    else:
+        params= client_params
 
     #extract the data using Socrata’s client library:
     client = Socrata(client_params['domain'], None)
-    results = client.get(client_params['dataset_identifier'], limit=client_params['limit'])
+    results = client.get(params['dataset_identifier'], limit=params['limit'])
     df = pd.DataFrame.from_records(results)
 
     # create directories if they do not exist and save raw data

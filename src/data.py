@@ -8,23 +8,23 @@ from sklearn.preprocessing import StandardScaler
 
 def load_data(custom_params=None):
 
-    params = custom_params or client_params
+        params = custom_params or client_params
 
-    #extract the data using Socrata’s client library:
-    client = Socrata(params['domain'], None)
-    results = client.get(params['dataset_identifier'], limit=params['limit'])
-    df = pd.DataFrame.from_records(results)
+        #extract the data using Socrata’s client library:
+        client = Socrata(params['domain'], None)
+        results = client.get(params['dataset_identifier'], limit=params['limit'])
+        df = pd.DataFrame.from_records(results)
 
-    # create directories if they do not exist and save raw data
-    project_dir_l = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    raw_dir = os.path.dirname(os.path.join(project_dir_l, path_params['raw_data_path']))
-    os.makedirs(raw_dir, exist_ok=True)
+        # create directories if they do not exist and save raw data
+        project_dir_l = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+        raw_dir = os.path.dirname(os.path.join(project_dir_l, path_params['raw_data_path']))
+        os.makedirs(raw_dir, exist_ok=True)
 
-    #save raw data to csv
-    csv_path = os.path.join(project_dir_l, path_params['raw_data_path'])
-    df.to_csv(csv_path, index=False)
+        #save raw data to csv
+        csv_path = os.path.join(project_dir_l, path_params['raw_data_path'])
+        df.to_csv(csv_path, index=False)
 
-    return df
+        return df
 
 
 def filter_and_process_data(df):

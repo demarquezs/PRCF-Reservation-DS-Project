@@ -19,7 +19,7 @@ def test_data():
     X_val = df[["feature1", "feature2"]].iloc[train_size:]
     y_train = df["target"].iloc[:train_size]
     y_val = df["target"].iloc[train_size:]
-    
+
     return X_train, X_val, y_train, y_val
 
 
@@ -30,8 +30,8 @@ def test_models():
 
 
 #decrease parameters to test
-@patch("src.train.training_params", {"n_splits": 3, "n_iter": 2})
-@patch("src.train.model_params", {"LinearRegression": {"fit_intercept": [True, False]}})
+@patch("src.config.training_params", {"n_splits": 3, "n_iter": 2})
+@patch("src.config.model_params", {"LinearRegression": {"fit_intercept": [True, False]}})
 
 
 def test_tscv_with_weighted_best_model(tmp_path, test_data, test_models, monkeypatch):

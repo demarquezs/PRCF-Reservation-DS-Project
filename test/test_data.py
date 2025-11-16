@@ -11,7 +11,7 @@ def test_load_data_real_small_sample():
     small_params["limit"] = 5
 
     # Call the same function but with smaller params
-    df = load_data(client_params=small_params)
+    df = load_data(custom_params=small_params)
 
     # Verify the results
     assert isinstance(df, pd.DataFrame)

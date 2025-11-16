@@ -1,4 +1,5 @@
 from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
+from src.config import training_params, model_params
 from sklearn.metrics import r2_score
 import numpy as np
 import joblib

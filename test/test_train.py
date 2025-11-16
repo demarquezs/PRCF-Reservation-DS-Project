@@ -32,15 +32,13 @@ def test_models():
 #decrease parameters to test
 @patch("src.config.training_params", {"n_splits": 3, "n_iter": 2})
 @patch("src.config.model_params", {"LinearRegression": {"fit_intercept": [True, False]}})
-
-
 def test_tscv_with_weighted_best_model(tmp_path, test_data, test_models, monkeypatch):
 
     #test the training workflow on a tiny datase
     X_train, X_val, y_train, y_val = test_data
 
     #patch the model directory to use pytest's tmp_path
-    monkeypatch.setattr("os.path.join", lambda *args: str(tmp_path / "best_model_pipeline.pkl"))
+    monkeypatch.setattr("src.train.joblib.dump", lambda model, path: print(f"Mock saved to {path}"))
     #avoid creating folders
     monkeypatch.setattr("os.makedirs", lambda *args, **kwargs: None) 
 

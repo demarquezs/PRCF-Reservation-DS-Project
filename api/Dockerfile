@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 #copy application files and model
 COPY api/main.py .
-COPY models /app/models
+COPY ../models /app/models
 
 #expose fastAPI port
 EXPOSE 8000 

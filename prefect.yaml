@@ -1,0 +1,10 @@
+# prefect.yaml
+name: prcf_reservation_project
+prefect-version: 3.x
+flows:
+  - src/pipeline.py:mlops_pipeline_flow
+deployments:
+  - name: production
+    flow: src/pipeline.py:mlops_pipeline_flow
+    work_pool:
+      name: default

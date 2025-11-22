@@ -1,15 +1,15 @@
 from scipy.stats import randint, uniform
 
-columns_to_drop = {'columns_to_drop':['row_id', 'center_name', 'center_address_1', 'center_city', 'center_state', 'center_country',
-                                    'center_zip_code', 'center_geolocation', 'center_phone_number_1', 'center_fax', 'transaction_site',
-                                    'permit_number', 'permit_status', 'event_type', 'event_end_year', 'event_end_month',
-                                    'customer_zip_code', 'customer_city', 'customer_state', 'center_address_2', 'center_phone_number_2',
-                                    'facility_name', 'site_name', 'event_start_month', 'permit_month','day_of_week']}
+columns_to_drop = ['row_id', 'center_name', 'center_address_1', 'center_city', 'center_state', 'center_country',
+                   'center_zip_code', 'center_geolocation', 'center_phone_number_1', 'center_fax', 'transaction_site',
+                   'permit_number', 'permit_status', 'event_type', 'event_end_year', 'event_end_month', 'customer_zip_code',
+                   'customer_city', 'customer_state', 'center_address_2', 'center_phone_number_2', 'facility_name', 
+                   'site_name', 'event_start_month', 'permit_month','day_of_week']
 
 client_params = {
     'domain': "citydata.mesaaz.gov",
     'dataset_identifier': "resf-c4x9",
-    'limit': 495000
+    'limit': 450000
 }
 
 

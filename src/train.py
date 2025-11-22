@@ -1,5 +1,8 @@
+from prefect import task
+import pandas as pd
 from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
 from src.config import training_params, model_params
+from src.utils import detect_gpu
 from sklearn.metrics import r2_score
 import numpy as np
 import joblib
@@ -7,6 +10,7 @@ import time
 import os
 
 
+@task(cache_policy=None, persist_result=False, refresh_cache=True)
 def tscv_with_weighted_best_model(X_train_scaled, X_val, y_train, y_val, models):
 
     n_splits = training_params["n_splits"]
@@ -19,16 +23,27 @@ def tscv_with_weighted_best_model(X_train_scaled, X_val, y_train, y_val, models)
     best_estimators = {}
     weighted_scores = {}
 
+    #convert data to numpy arrays for GPU compatibility
+    if isinstance(X_train_scaled, pd.DataFrame):
+        X_train_scaled = X_train_scaled.values
+    if isinstance(X_val, pd.DataFrame):
+        X_val = X_val.values
+    if isinstance(y_train, pd.Series):
+        y_train = y_train.values
+    if isinstance(y_val, pd.Series):
+        y_val = y_val.values
+
     start_time = time.time()
     print("Starting models training and evaluation with TimeSeriesSplit")
+    print(f"Data converted to NumPy arrays - X_train shape: {X_train_scaled.shape}, X_val shape: {X_val.shape}")
 
-    #train each model
+    # Train each model
     for name, model in models.items():
         print(f"\nTraining and Evaluating {name}...")
 
         search = RandomizedSearchCV(
-            estimator=model,
-            param_distributions=param_distributions[name],
+            model, 
+            param_distributions=param_distributions[name], 
             n_iter=n_iter,
             scoring="r2",
             cv=tscv,
@@ -40,13 +55,12 @@ def tscv_with_weighted_best_model(X_train_scaled, X_val, y_train, y_val, models)
 
         print(f"Best params for {name}: {search.best_params_}")
 
-
-        #evaluate weighted R² on validation set
+        # Evaluate weighted R² on validation set
         split_scores = []
 
         for i, (train_idx, test_idx) in enumerate(tscv.split(X_val)):
-            X_val_train, X_val_test = X_val.iloc[train_idx], X_val.iloc[test_idx]
-            y_val_train, y_val_test = y_val.iloc[train_idx], y_val.iloc[test_idx]
+            X_val_train, X_val_test = X_val[train_idx], X_val[test_idx]
+            y_val_train, y_val_test = y_val[train_idx], y_val[test_idx]
 
             model = best_estimators[name]
             model.fit(X_val_train, y_val_train)
@@ -59,16 +73,14 @@ def tscv_with_weighted_best_model(X_train_scaled, X_val, y_train, y_val, models)
         weighted_scores[name] = np.sum(split_scores) / np.sum(weights)
         print(f"Weighted R² for {name}: {weighted_scores[name]:.4f}")
 
-
-    #select best model
+    # Select best model
     final_model_name = max(weighted_scores, key=weighted_scores.get)
     final_model = best_estimators[final_model_name]
 
     print(f"\nFinal selected model: {final_model_name} "
           f"with weighted R²: {weighted_scores[final_model_name]:.4f}")
 
-
-    #save model
+    # Save model
     model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../models"))
     os.makedirs(model_dir, exist_ok=True)
 

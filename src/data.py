@@ -4,33 +4,65 @@ import os
 from src.config import client_params, path_params, columns_to_drop, data_params
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
+from time import sleep
 
+def load_data(custom_params=None, force_download=False):
 
-def load_data(custom_params=None):
+    params = custom_params or client_params
 
-        params = custom_params or client_params
+    #create directories if they do not exist and save raw data
+    project_dir_l = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    csv_path = os.path.join(project_dir_l, path_params['raw_data_path'])
+    os.makedirs(os.path.dirname(csv_path), exist_ok=True)
+    
+ 
+    print(f"Attempting to fetch {params['limit']} rows from Socrata API...")
+    
+    for attempt in range(3):
 
-        #extract the data using Socrata’s client library:
-        client = Socrata(params['domain'], None)
-        results = client.get(params['dataset_identifier'], limit=params['limit'])
-        df = pd.DataFrame.from_records(results)
+        #try download from socrata
+        try:
 
-        # create directories if they do not exist and save raw data
-        project_dir_l = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-        raw_dir = os.path.dirname(os.path.join(project_dir_l, path_params['raw_data_path']))
-        os.makedirs(raw_dir, exist_ok=True)
+            client = Socrata(params['domain'], None)
+            results = client.get(params["dataset_identifier"],limit=params["limit"])
+            df = pd.DataFrame.from_records(results)
+            
+            df.to_csv(csv_path, index=False)
+            print(f"Successfully downloaded {len(df)} records and saved to: {csv_path}")
+            
+            return df
+        
+        except Exception as e:
 
-        #save raw data to csv
-        csv_path = os.path.join(project_dir_l, path_params['raw_data_path'])
-        df.to_csv(csv_path, index=False)
-
-        return df
+            print(f"Attempt {attempt + 1} failed: {e}")
+            if attempt < 2:
+                print("Retrying in 5 seconds...")
+                sleep(5)
+            else:
+                print("All download attempts failed.")
+    
+    #download from cache
+    if os.path.exists(csv_path):
+        print(f"Falling back to cached data from: {csv_path}")
+        try:
+            df = pd.read_csv(csv_path)
+            print(f"Loaded {len(df)} cached rows as fallback")
+            return df
+        except Exception as e:
+            print(f"Failed to read cached file: {e}")
+    
+    #if no cache available either, raise error
+    raise RuntimeError("Failed to fetch data from API and no cached data available. Check internet connection or API availability.")
 
 
 def filter_and_process_data(df):
 
     # remove the unnecessarycolumns from the dataset and NaN values:
-    df_filtered = df.drop(columns=df[columns_to_drop['columns_to_drop']])
+    missing = [c for c in columns_to_drop if c not in df.columns]
+    if missing:
+        print(f"Missing columns (skipped): {missing}")
+    
+    df_filtered = df.drop(columns=columns_to_drop, errors='ignore')
     df_filtered.dropna(axis=0, how='any', subset=None, inplace=True)
     df_filtered.reset_index(drop=True, inplace=True)
 

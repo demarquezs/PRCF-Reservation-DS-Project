@@ -1,0 +1,79 @@
+name: MLOps Pipeline
+
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - "src/**"
+            - "data/**"
+            - "models/**"
+            - "requirements_mlop*.txt"
+            - "api/**"
+    workflow_dispatch:
+
+
+jobs:
+    train:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v3
+
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: "3.12"
+
+            - name: Install dependencies
+              run: pip install - requirements_mlops.txt
+
+            - name: Run pipeline
+              run: python -m src.pipeline
+            
+            - name: Verify model file exists
+              run: |
+                echo "Checking model file..."
+                ls -lh models/
+            
+            - name: Upload trained model
+              uses: actions/upload-artifact@v3
+              with:
+                name: trained-model
+                path: models/best_model_pipeline.pkl
+    
+    deploy:
+        needs: train
+        runs-on: ubuntu-latest
+        steps:
+            - name: Chekout repo
+              uses: actions/checkout@v3
+            
+            - name: Download trained model
+              uses: actions/download-artifact@v3
+              with:
+                name: trained model
+                path: models/
+            
+            - name: Set up Docker Buildx
+              uses: ocker/login-action@v3
+
+            - name: Log in to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                username: ${{ secrets.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_PASSWORD }}
+
+            - name: Build and push FastAPI image
+              uses: docker/build-push-action@v5
+              width:
+                context: .
+                file: api/Dockerfile
+                push: true
+                tags: ${{ secrets.DOCKER_USERNAME }}/prcf-api:latest
+
+            
+
+
+

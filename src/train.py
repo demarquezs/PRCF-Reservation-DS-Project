@@ -37,7 +37,7 @@ def tscv_with_weighted_best_model(X_train_scaled, X_val, y_train, y_val, models)
     print("Starting models training and evaluation with TimeSeriesSplit")
     print(f"Data converted to NumPy arrays - X_train shape: {X_train_scaled.shape}, X_val shape: {X_val.shape}")
 
-    # Train each model
+    #train each model
     for name, model in models.items():
         print(f"\nTraining and Evaluating {name}...")
 
@@ -55,7 +55,7 @@ def tscv_with_weighted_best_model(X_train_scaled, X_val, y_train, y_val, models)
 
         print(f"Best params for {name}: {search.best_params_}")
 
-        # Evaluate weighted R² on validation set
+        #evaluate weighted R² on validation set
         split_scores = []
 
         for i, (train_idx, test_idx) in enumerate(tscv.split(X_val)):
@@ -73,22 +73,24 @@ def tscv_with_weighted_best_model(X_train_scaled, X_val, y_train, y_val, models)
         weighted_scores[name] = np.sum(split_scores) / np.sum(weights)
         print(f"Weighted R² for {name}: {weighted_scores[name]:.4f}")
 
-    # Select best model
+    #select best model
     final_model_name = max(weighted_scores, key=weighted_scores.get)
     final_model = best_estimators[final_model_name]
 
     print(f"\nFinal selected model: {final_model_name} "
           f"with weighted R²: {weighted_scores[final_model_name]:.4f}")
 
-    # Save model
+    #save model
     model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../models"))
     os.makedirs(model_dir, exist_ok=True)
 
     final_model_path = os.path.join(model_dir, "best_model_pipeline.pkl")
     joblib.dump(final_model, final_model_path)
 
-    print(f"✅ Model saved at: {final_model_path}")
-    print("Files in the model directory:", os.listdir(model_dir))
+    if os.path.exists(model_dir):
+        print("Files in the model directory:", os.listdir(model_dir))
+    else:
+        print(f"Model directory not found: {model_dir}")
 
     print(f"Total training time: {time.time() - start_time:.2f} seconds")
 

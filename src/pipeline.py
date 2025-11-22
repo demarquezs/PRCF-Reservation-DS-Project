@@ -41,9 +41,7 @@ def training_model_task(X_train_scaled, X_val, y_train, y_val, models):
     with mlflow.start_run(run_name="Training_All_Models"):
         
         #onecall function handles all models
-        best_name, best_model, weighted_scores = tscv_with_weighted_best_model(
-            X_train_scaled, X_val, y_train, y_val, models
-        )
+        best_name, best_model, weighted_scores = tscv_with_weighted_best_model(X_train_scaled, X_val, y_train, y_val, models)
 
         #log weighted R² for every model
         for mname, score in weighted_scores.items():
@@ -53,9 +51,9 @@ def training_model_task(X_train_scaled, X_val, y_train, y_val, models):
 
         #create signature from training data
         if hasattr(X_train_scaled, 'shape'):
-            sample_input = X_train_scaled[:5]
-        else:
             sample_input = X_train_scaled.iloc[:5]
+        else:
+            sample_input = X_train_scaled[:5]
         
         sample_output = best_model.predict(sample_input)
         signature = infer_signature(sample_input, sample_output)

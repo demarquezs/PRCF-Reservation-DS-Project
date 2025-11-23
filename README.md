@@ -127,18 +127,6 @@ jobs:
 
 ---
 
-## 🧠 Optimization Recommendations
-
-| **Area**                | **Recommendation**                                                            |
-| ----------------------- | ----------------------------------------------------------------------------- |
-| **Storage**             | Use AWS S3 or MLflow Artifact Store for large `.pkl` files instead of GitHub. |
-| **Testing**             | Add `pytest` and linting (flake8/black) to GitHub Actions.                    |
-| **Prefect Reliability** | Add caching, retries, and notifications to tasks.                             |
-| **Docker Optimization** | Apply multi-stage builds for smaller images.                                  |
-| **Deployment**          | Host the API container on AWS ECS, Azure Container Apps, or GCP Cloud Run.    |
-
----
-
 ## 🎯 Outcome
 
 ✅ Began as a **data science forecasting project**.
@@ -147,6 +135,3 @@ jobs:
 ✅ Ready for **continuous training, deployment, and monitoring**.
 
 ---
-
-**👨‍💻 Author:** David Sánchez
-**🎯 Goal:** Demonstrate the transition from **Data Science experimentation** to **MLOps automation and deployment**.

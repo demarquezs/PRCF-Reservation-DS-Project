@@ -27,27 +27,27 @@ jobs:
           name: pytest-results
           path: reports/test-results.xml
 
-build_and_push:
-  needs: test
-  runs-on: ubuntu-latest
-  permissions:
-    contents: read
-    packages: write
-  env:
-    REGISTRY: ${{ secrets.REGISTRY }}
-    REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
-    REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-  steps:
-    - uses: actions/checkout@v4
+  build_and_push:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      REGISTRY: ${{ secrets.REGISTRY }}
+      REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Log in to registry
-      run: echo "${{ env.REGISTRY_PASSWORD }}" | docker login ${{ env.REGISTRY }} -u ${{ env.REGISTRY_USER }} --password-stdin
+      - name: Log in to registry
+        run: echo "${{ env.REGISTRY_PASSWORD }}" | docker login ${{ env.REGISTRY }} -u ${{ env.REGISTRY_USER }} --password-stdin
 
-    - name: Build and push Docker image
-      run: |
-        IMAGE=${{ env.REGISTRY }}/${{ env.REGISTRY_USER }}/prcf-reservation-ds-project:latest
-        docker build -t $IMAGE .
-        docker push $IMAGE
+      - name: Build and push Docker image
+        run: |
+          IMAGE=${{ env.REGISTRY }}/${{ env.REGISTRY_USER }}/prcf-reservation-ds-project:latest
+          docker build -t $IMAGE .
+          docker push $IMAGE
 
   run_prefect_pipeline:
     needs: build_and_push

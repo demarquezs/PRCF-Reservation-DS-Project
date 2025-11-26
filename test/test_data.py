@@ -4,7 +4,6 @@ from src.data import load_data
 from src.config import client_params
 
 def test_load_data_real_small_sample():
-    """Test the real Socrata connection, but only download a few records."""
     
     # Create a smaller version of the config for testing
     small_params = client_params.copy()

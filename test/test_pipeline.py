@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch, MagicMock
 from src.pipeline import (load_data_task, obtain_models_task, training_model_task, mlops_pipeline_flow)
 
@@ -31,9 +30,9 @@ def test_obtain_models_task():
 #test training_model_task
 @patch("src.pipeline.mlflow.sklearn.log_model")
 @patch("src.pipeline.mlflow.start_run")
-
 def test_training_model_task(mock_log_model, mock_start_run):
-    #Eesure the training task calls MLflow and returns expected outputs
+
+    #ensure the training task calls MLflow and returns expected outputs
     X_train, X_val, y_train, y_val = [1], [2], [3], [4]
     fake_model = MagicMock()
     fake_models = {"LinearRegression": fake_model}

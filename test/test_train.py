@@ -2,7 +2,6 @@ import pytest
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
-import os
 from unittest.mock import patch
 from src.train import tscv_with_weighted_best_model
 
@@ -30,7 +29,7 @@ def test_models():
 
 
 #decrease parameters to test
-@patch("src.config.training_params", {"n_splits": 3, "n_iter": 2})
+@patch("src.config.training_params", {"n_iter": 2})
 @patch("src.config.model_params", {"LinearRegression": {"fit_intercept": [True, False]}})
 def test_tscv_with_weighted_best_model(tmp_path, test_data, test_models, monkeypatch):
 

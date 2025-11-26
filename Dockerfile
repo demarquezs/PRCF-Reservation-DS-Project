@@ -24,37 +24,37 @@ RUN add-apt-repository ppa:deadsnakes/ppa && \
         python3-pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set Python 3.12 as default
+#set Python 3.12 as default
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 
 # Create and activate virtual environment
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Upgrade core tools
+#upgrade core tools
 RUN pip install --upgrade pip setuptools wheel
 
-# Set working directory
+#set working directory
 WORKDIR /app
 
-# Copy and install dependencies
+#copy and install dependencies
 COPY requirements_mlops.txt .
 RUN pip install numpy==1.26.4 && \
     pip install -r requirements_mlops.txt && \
     pip install xgboost==1.7.5
 
-# Copy project code
+#copy project code
 COPY . .
 
-# Environment variables
+#environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
-# Create models directory for persistence
+#create models directory for persistence
 RUN mkdir -p /app/models
 
-# Default command
+#default command
 CMD ["python", "src/pipeline.py"]
 
 

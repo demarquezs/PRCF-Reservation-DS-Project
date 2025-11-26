@@ -45,7 +45,7 @@ build_and_push:
 
     - name: Build and push Docker image
       run: |
-        IMAGE=${{ env.REGISTRY }}/${{ env.REGISTRY_USER }}/traffic-crashes-mlops:latest
+        IMAGE=${{ env.REGISTRY }}/${{ env.REGISTRY_USER }}/prcf-reservation-ds-project:latest
         docker build -t $IMAGE .
         docker push $IMAGE
 

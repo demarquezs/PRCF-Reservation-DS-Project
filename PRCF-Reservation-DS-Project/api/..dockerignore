@@ -1,0 +1,16 @@
+.git/
+__pycache__/
+mlruns/
+models/
+data/
+*.pkl
+*.csv
+*.db
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+.dvc/
+notebooks/
+

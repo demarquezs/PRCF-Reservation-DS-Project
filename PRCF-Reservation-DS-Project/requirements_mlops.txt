@@ -1,0 +1,14 @@
+auto_mix_prep==0.2.0
+joblib==1.5.2
+mlflow==3.2.0
+mlflow_skinny==3.2.0
+mlops_project==0.0.4
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.2
+scikit-learn==1.5.2
+prefect==3.5.0
+sodapy==2.2.0
+xgboost==3.1.1
+
+

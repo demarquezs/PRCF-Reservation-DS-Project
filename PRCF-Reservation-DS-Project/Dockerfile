@@ -1,6 +1,7 @@
 # Base image with CUDA runtime
 FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04
 
+#define environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=America/Bogota \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -8,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONPATH=/app \
     PATH="/opt/venv/bin:$PATH"
 
-# Combine system dependencies installation in single layer
+#system dependencies installation
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     wget \
@@ -27,25 +28,25 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Create virtual environment and upgrade core tools
+#create virtual environment and upgrade core tools
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Set working directory
+#set working directory
 WORKDIR /app
 
-# Copy and install dependencies (separate layer for better caching)
+#copy and install dependencies (separate layer for better caching)
 COPY requirements_mlops.txt .
 RUN pip install --no-cache-dir numpy==1.26.4 \
     && pip install --no-cache-dir -r requirements_mlops.txt \
     && pip install --no-cache-dir xgboost==1.7.5 \
     && rm -rf /root/.cache/pip
 
-# Copy project code
+#copy project code
 COPY . .
 
-# Create models directory for persistence
+#create models directory for persistence
 RUN mkdir -p /app/models
 
-# Default command
+# efault command
 CMD ["python", "src/pipeline.py"]
